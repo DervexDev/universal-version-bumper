@@ -1,23 +1,27 @@
-name: 'The name of your action here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'Universal Version Bumper'
+description: 'Bump version in any JSON or TOML file with this simple Action'
+author: 'Dervex'
 
-# Add your action's branding here. This will appear on the GitHub Marketplace.
 branding:
-  icon: 'heart'
-  color: 'red'
+  icon: 'chevrons-up'
+  color: 'blue'
 
-# Define your inputs here.
 inputs:
-  milliseconds:
-    description: 'Your input description here'
+  path:
+    description: 'Path to the JSON or TOML file you want to bump'
     required: true
-    default: '1000'
+  version:
+    description: 'The version to bump to, defaults to the tag name'
+    required: false
+  format:
+    description: 'The format of the file you want to bump, defaults to the file extension'
+    required: false
 
-# Define your outputs here.
 outputs:
-  time:
-    description: 'Your output description here'
+  new_version:
+    description: 'The new file version'
+  old_version:
+    description: 'The previous file version'
 
 runs:
   using: node20

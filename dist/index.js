@@ -24705,86 +24705,132 @@ exports["default"] = _default;
 
 /***/ }),
 
-/***/ 399:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+/***/ 6021:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.run = void 0;
-const core = __importStar(__nccwpck_require__(2186));
-const wait_1 = __nccwpck_require__(5259);
-/**
- * The main function for the action.
- * @returns {Promise<void>} Resolves when the action is complete.
- */
-async function run() {
-    try {
-        const ms = core.getInput('milliseconds');
-        // Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
-        core.debug(`Waiting ${ms} milliseconds ...`);
-        // Log the current timestamp, wait, then log the new timestamp
-        core.debug(new Date().toTimeString());
-        await (0, wait_1.wait)(parseInt(ms, 10));
-        core.debug(new Date().toTimeString());
-        // Set outputs for other workflow steps to use
-        core.setOutput('time', new Date().toTimeString());
+const fs_1 = __nccwpck_require__(7147);
+const DATA = {
+    json: {
+        regex: /"version"\s*:\s*"[^"]+?([^\/"]+)"/gm,
+        replace: '"version": "$v"',
+        index: 1
+    },
+    toml: {
+        regex: /version\s*=\s*"[^"]+?([^\/"]+)"/gm,
+        replace: 'version = "$v"',
+        index: 0
     }
-    catch (error) {
-        // Fail the workflow run if an error occurs
-        if (error instanceof Error)
-            core.setFailed(error.message);
+};
+function process(contents, format, version) {
+    const matches = contents.match(DATA[format].regex);
+    if (!matches) {
+        throw new Error('No version field found or file is corrupted');
     }
+    const match = matches[0];
+    const newContents = contents.replace(match, DATA[format].replace.replace('$v', version));
+    const oldVersion = match
+        .match(/"(.*?)"/g)[DATA[format].index].replaceAll('"', '');
+    return [newContents, oldVersion];
 }
-exports.run = run;
+function bumpVersion(path, format, version) {
+    const contents = (0, fs_1.readFileSync)(path, 'utf8');
+    if (!DATA[format]) {
+        throw new Error(`Unsupported format: ${format}`);
+    }
+    const [newContents, oldVersion] = process(contents, format, version);
+    (0, fs_1.writeFileSync)(path, newContents, 'utf8');
+    return oldVersion;
+}
+exports["default"] = bumpVersion;
 
 
 /***/ }),
 
-/***/ 5259:
-/***/ ((__unused_webpack_module, exports) => {
+/***/ 1762:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.wait = void 0;
-/**
- * Wait for a number of milliseconds.
- * @param milliseconds The number of milliseconds to wait.
- * @returns {Promise<string>} Resolves with 'done!' after the wait is over.
- */
-async function wait(milliseconds) {
-    return new Promise(resolve => {
-        if (isNaN(milliseconds)) {
-            throw new Error('milliseconds not a number');
-        }
-        setTimeout(() => resolve('done!'), milliseconds);
-    });
+const core_1 = __nccwpck_require__(2186);
+const fs_1 = __nccwpck_require__(7147);
+function getFormat(path) {
+    const format = (0, core_1.getInput)('format');
+    if (format == 'json' || format == 'JSON') {
+        return 'json';
+    }
+    else if (format == 'toml' || format == 'TOML') {
+        return 'toml';
+    }
+    else if (format != '') {
+        throw new Error(`Invalid file format: ${format}`);
+    }
+    if (path.endsWith('.json')) {
+        return 'json';
+    }
+    else if (path.endsWith('.toml')) {
+        return 'toml';
+    }
+    throw new Error(`File format not recognized: ${path}`);
 }
-exports.wait = wait;
+function parseVersion() {
+    let version = (0, core_1.getInput)('version');
+    if (version === '') {
+        const ref = process.env['GITHUB_REF'] || '';
+        if (!ref.startsWith('refs/tags/')) {
+            throw new Error(`${ref} is not a tag`);
+        }
+        version = ref.substring('refs/tags/'.length);
+    }
+    return version.startsWith('v') ? version.substring(1) : version;
+}
+function getInputs() {
+    const path = (0, core_1.getInput)('path');
+    if (!(0, fs_1.existsSync)(path)) {
+        throw new Error(`File ${path} does not exist`);
+    }
+    const format = getFormat(path);
+    const version = parseVersion();
+    return {
+        path,
+        format,
+        version
+    };
+}
+exports["default"] = getInputs;
+
+
+/***/ }),
+
+/***/ 6144:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const core_1 = __nccwpck_require__(2186);
+const getInputs_1 = __importDefault(__nccwpck_require__(1762));
+const bumpVersion_1 = __importDefault(__nccwpck_require__(6021));
+try {
+    const { path, format, version } = (0, getInputs_1.default)();
+    const oldVersion = (0, bumpVersion_1.default)(path, format, version);
+    (0, core_1.setOutput)('new_version', version);
+    (0, core_1.setOutput)('old_version', oldVersion);
+}
+catch (error) {
+    if (error instanceof Error) {
+        (0, core_1.setFailed)(error.message);
+    }
+    else {
+        (0, core_1.setFailed)(`${error}`);
+    }
+}
 
 
 /***/ }),
@@ -26676,23 +26722,13 @@ module.exports = parseParams
 /******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";
 /******/ 	
 /************************************************************************/
-var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it need to be in strict mode.
-(() => {
-"use strict";
-var exports = __webpack_exports__;
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-/**
- * The entrypoint for the action.
- */
-const main_1 = __nccwpck_require__(399);
-// eslint-disable-next-line @typescript-eslint/no-floating-promises
-(0, main_1.run)();
-
-})();
-
-module.exports = __webpack_exports__;
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module is referenced by other modules so it can't be inlined
+/******/ 	var __webpack_exports__ = __nccwpck_require__(6144);
+/******/ 	module.exports = __webpack_exports__;
+/******/ 	
 /******/ })()
 ;
 //# sourceMappingURL=index.js.map
