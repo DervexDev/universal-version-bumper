@@ -2,9 +2,8 @@
 
 Bump version in any JSON or TOML file with this simple Action
 
-![CI](https://github.com/dervexdev/version-bumper/actions/workflows/ci.yml/badge.svg)(https://github.com/dervexdev/version-bumper/actions/workflows/ci.yml)
+[![CI](https://github.com/dervexdev/version-bumper/actions/workflows/ci.yml/badge.svg)](https://github.com/dervexdev/version-bumper/actions/workflows/ci.yml)
 [![Super-Linter](https://github.com/dervexdev/version-bumper/actions/workflows/linter.yml/badge.svg)](https://github.com/dervexdev/version-bumper/actions/workflows/linter.yml)
-[![Transpiled JS](https://github.com/DervexDev/version-bumper/actions/workflows/dist.yml/badge.svg)](https://github.com/DervexDev/version-bumper/actions/workflows/dist.yml)
 [![CodeQL](https://github.com/dervexdev/version-bumper/actions/workflows/codeql.yml/badge.svg)](https://github.com/dervexdev/version-bumper/actions/workflows/codeql.yml)
 
 ## Example
