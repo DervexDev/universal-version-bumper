@@ -1,16 +1,16 @@
 {
-  "name": "universal-version-bumper",
+  "name": "file-version-bumper",
   "description": "Bump version in any JSON or TOML file with this simple Action",
   "version": "1.0.0",
   "author": "Dervex",
   "private": true,
-  "homepage": "https://github.com/DervexDev/universal-version-bumper",
+  "homepage": "https://github.com/DervexDev/file-version-bumper",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/DervexDev/universal-version-bumper.git"
+    "url": "git+https://github.com/DervexDev/file-version-bumper.git"
   },
   "bugs": {
-    "url": "https://github.com/DervexDev/universal-version-bumper/issues"
+    "url": "https://github.com/DervexDev/file-version-bumper/issues"
   },
   "keywords": [
     "actions",

@@ -1,4 +1,4 @@
-name: 'Universal Version Bumper'
+name: 'File Version Bumper'
 description: 'Bump version in any JSON or TOML file with this simple Action'
 author: 'Dervex'
 

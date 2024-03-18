@@ -1,10 +1,10 @@
-# Universal Version Bumper
+# File Version Bumper
 
 Bump version in any JSON or TOML file with this simple Action
 
-[![CI](https://github.com/dervexdev/version-bumper/actions/workflows/ci.yml/badge.svg)](https://github.com/dervexdev/version-bumper/actions/workflows/ci.yml)
-[![Super-Linter](https://github.com/dervexdev/version-bumper/actions/workflows/linter.yml/badge.svg)](https://github.com/dervexdev/version-bumper/actions/workflows/linter.yml)
-[![CodeQL](https://github.com/dervexdev/version-bumper/actions/workflows/codeql.yml/badge.svg)](https://github.com/dervexdev/version-bumper/actions/workflows/codeql.yml)
+[![CI](https://github.com/dervexdev/file-version-bumper/actions/workflows/ci.yml/badge.svg)](https://github.com/dervexdev/file-version-bumper/actions/workflows/ci.yml)
+[![Super-Linter](https://github.com/dervexdev/file-version-bumper/actions/workflows/linter.yml/badge.svg)](https://github.com/dervexdev/file-version-bumper/actions/workflows/linter.yml)
+[![CodeQL](https://github.com/dervexdev/file-version-bumper/actions/workflows/codeql.yml/badge.svg)](https://github.com/dervexdev/file-version-bumper/actions/workflows/codeql.yml)
 
 ## Example
 
@@ -24,7 +24,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Bump Cargo version
-        uses: DervexDev/version-bumper@v1
+        uses: DervexDev/file-version-bumper@v1
         with:
           path: ./Cargo.toml
 
